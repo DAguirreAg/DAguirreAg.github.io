@@ -17,3 +17,32 @@ params:
   ShowReadingTime: true
   ShowShareButtons: true
   ShowPostNavLinks: true
+
+menu:
+  main:
+    - identifier: archives
+      name: Archive
+      url: /archive/
+      weight: 10 
+
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 20 
+
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 30 
+
+    - identifier: search
+      name: Search
+      url: /search/
+      weight: 40 
+
+# Necessary for the search functionality
+outputs:
+    home:
+        - HTML
+        - RSS
+        - JSON # is necessary
