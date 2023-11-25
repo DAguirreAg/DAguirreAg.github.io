@@ -5,6 +5,34 @@
     <link>https://daguirreag.github.io/tags/</link>
     <description>Recent content in Tags on Daniel Aguirre</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://daguirreag.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Fri, 10 Nov 2023 21:59:21 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>homelab</title>
+      <link>https://daguirreag.github.io/tags/homelab/</link>
+      <pubDate>Fri, 10 Nov 2023 21:59:21 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/tags/homelab/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>networking</title>
+      <link>https://daguirreag.github.io/tags/networking/</link>
+      <pubDate>Fri, 10 Nov 2023 21:59:21 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/tags/networking/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>raspberrypi</title>
+      <link>https://daguirreag.github.io/tags/raspberrypi/</link>
+      <pubDate>Fri, 10 Nov 2023 21:59:21 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/tags/raspberrypi/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

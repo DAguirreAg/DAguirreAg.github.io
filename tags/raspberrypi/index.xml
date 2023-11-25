@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Daniel Aguirre</title>
-    <link>https://daguirreag.github.io/</link>
-    <description>Recent content on Daniel Aguirre</description>
+    <title>raspberrypi on Daniel Aguirre</title>
+    <link>https://daguirreag.github.io/tags/raspberrypi/</link>
+    <description>Recent content in raspberrypi on Daniel Aguirre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Nov 2023 21:59:21 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 Nov 2023 21:59:21 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/raspberrypi/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Setting up my own Home lab: Hardware/Networking</title>
       <link>https://daguirreag.github.io/posts/setting-up-my-own-home-lab-hardware-networking/</link>
@@ -16,8 +16,6 @@
       <description>As a data engineer, it is quite obvious that I like tinkering with technology, specially with software related stuff. Because of this, some time ago I decided to setup my own simple homelab where I could experiment and run scripts around without worrying about setting up cloud services.
 As such, I have decided to share how I setted up my homelab, so others can use it as an inspiration or just have a look at it.</description>
     </item>
-    
-    
     
   </channel>
 </rss>
