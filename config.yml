@@ -10,9 +10,9 @@ params:
     Content: 'Data Engineer | Software Engineer | Python developer 🐍'
   socialIcons:
     - name: linkedin
-      url: "https://google.com"
+      url: "www.linkedin.com/in/daniel-aguirre-aguirrebena"
     - name: github
-      url: "https://google.com"
+      url: "https://github.com/DAguirreAg"
 
   ShowReadingTime: true
   ShowShareButtons: true
