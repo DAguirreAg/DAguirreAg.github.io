@@ -1,0 +1,19 @@
+baseURL: 'https://daguirreag.github.io/'
+languageCode: 'en-us'
+title: 'Daniel Aguirre'
+theme: PaperMod
+
+params:
+
+  homeInfoParams:
+    Title: 'Daniel Aguirre'
+    Content: 'Data Engineer | Software Engineer | Python developer 🐍'
+  socialIcons:
+    - name: linkedin
+      url: "https://google.com"
+    - name: github
+      url: "https://google.com"
+
+  ShowReadingTime: true
+  ShowShareButtons: true
+  ShowPostNavLinks: true
