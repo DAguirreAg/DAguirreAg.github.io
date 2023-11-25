@@ -36,4 +36,4 @@ jobs:
           git add .
           git config user.name 'daguirreag'
           git commit -m 'Updated site'
-          git push
+          git push          
