@@ -27,6 +27,15 @@ Static IP address on each machine. This facilitates troubleshooting as well as e
 As such, I have decided to share how I set up my homelab, so others can use it as an inspiration or just have a look at it.</description>
     </item>
     
+    <item>
+      <title>About</title>
+      <link>https://daguirreag.github.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://daguirreag.github.io/about/</guid>
+      <description></description>
+    </item>
+    
     
     
   </channel>
