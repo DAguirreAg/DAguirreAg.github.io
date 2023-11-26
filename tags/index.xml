@@ -6,11 +6,20 @@
     <description>Recent content in Tags on Daniel Aguirre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Nov 2023 21:59:21 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 25 Nov 2023 18:51:39 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>docker</title>
+      <link>https://daguirreag.github.io/tags/docker/</link>
+      <pubDate>Sat, 25 Nov 2023 18:51:39 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>homelab</title>
       <link>https://daguirreag.github.io/tags/homelab/</link>
-      <pubDate>Fri, 10 Nov 2023 21:59:21 +0100</pubDate>
+      <pubDate>Sat, 25 Nov 2023 18:51:39 +0100</pubDate>
       
       <guid>https://daguirreag.github.io/tags/homelab/</guid>
       <description></description>
@@ -19,18 +28,45 @@
     <item>
       <title>networking</title>
       <link>https://daguirreag.github.io/tags/networking/</link>
-      <pubDate>Fri, 10 Nov 2023 21:59:21 +0100</pubDate>
+      <pubDate>Sat, 25 Nov 2023 18:51:39 +0100</pubDate>
       
       <guid>https://daguirreag.github.io/tags/networking/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Pi-Hole</title>
+      <link>https://daguirreag.github.io/tags/pi-hole/</link>
+      <pubDate>Sat, 25 Nov 2023 18:51:39 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/tags/pi-hole/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>raspberrypi</title>
       <link>https://daguirreag.github.io/tags/raspberrypi/</link>
-      <pubDate>Fri, 10 Nov 2023 21:59:21 +0100</pubDate>
+      <pubDate>Sat, 25 Nov 2023 18:51:39 +0100</pubDate>
       
       <guid>https://daguirreag.github.io/tags/raspberrypi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>software</title>
+      <link>https://daguirreag.github.io/tags/software/</link>
+      <pubDate>Sat, 25 Nov 2023 18:51:39 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/tags/software/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SSH</title>
+      <link>https://daguirreag.github.io/tags/ssh/</link>
+      <pubDate>Sat, 25 Nov 2023 18:51:39 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/tags/ssh/</guid>
       <description></description>
     </item>
     

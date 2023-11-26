@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Posts on Daniel Aguirre</title>
-    <link>https://daguirreag.github.io/posts/</link>
-    <description>Recent content in Posts on Daniel Aguirre</description>
+    <title>software on Daniel Aguirre</title>
+    <link>https://daguirreag.github.io/tags/software/</link>
+    <description>Recent content in software on Daniel Aguirre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Nov 2023 18:51:39 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 25 Nov 2023 18:51:39 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/software/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Setting up my own Home lab: Software</title>
       <link>https://daguirreag.github.io/posts/setting-up-my-own-home-lab-software/</link>
@@ -15,16 +15,6 @@
       <guid>https://daguirreag.github.io/posts/setting-up-my-own-home-lab-software/</guid>
       <description>With the homelab hardware set up, it is time to start preparing the machines so they can work together. As I intend to use my homelab as a safe and easy to use &amp;ldquo;IT playground&amp;rdquo;, I have decided that the following elements would need to be setup:
 Static IP address on each machine. This facilitates troubleshooting as well as easing the communication between the machines. Remote control software and SSH. This facilitates troubleshooting my &amp;ldquo;remote&amp;rdquo; machines without having to hook a keyboard+mouse+monitor to them.</description>
-    </item>
-    
-    <item>
-      <title>Setting up my own Home lab: Hardware/Networking</title>
-      <link>https://daguirreag.github.io/posts/setting-up-my-own-home-lab-hardware-networking/</link>
-      <pubDate>Fri, 10 Nov 2023 21:59:21 +0100</pubDate>
-      
-      <guid>https://daguirreag.github.io/posts/setting-up-my-own-home-lab-hardware-networking/</guid>
-      <description>As a data engineer, it is quite obvious that I like tinkering with technology, specially with software related stuff. Because of this, some time ago I decided to setup my own simple homelab where I could experiment and run scripts around without worrying about setting up cloud services.
-As such, I have decided to share how I set up my homelab, so others can use it as an inspiration or just have a look at it.</description>
     </item>
     
   </channel>
