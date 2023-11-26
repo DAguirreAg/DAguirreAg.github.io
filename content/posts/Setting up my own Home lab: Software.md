@@ -1,6 +1,7 @@
 ---
 title: 'Setting up my own Home lab: Software'
 date: 2023-11-25T18:51:39+01:00
+author: Daniel Aguirre
 draft: false
 tags: ["homelab", "raspberrypi", "software", "networking", "SSH", "docker", "Pi-Hole"]
 cover:

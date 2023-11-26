@@ -1,6 +1,7 @@
 ---
 title: 'Setting up my own Home lab: Hardware/Networking'
 date: 2023-11-10T21:59:21+01:00
+author: Daniel Aguirre
 draft: false
 tags: ["homelab", "raspberrypi", "networking"]
 cover:
