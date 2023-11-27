@@ -37,6 +37,15 @@ As such, I have decided to share how I set up my homelab, so others can use it a
     </item>
     
     
+    <item>
+      <title>Projects</title>
+      <link>https://daguirreag.github.io/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://daguirreag.github.io/projects/</guid>
+      <description>Data engineering 💽 Financial news collectors - Financial news collector and aggregator service. IP-to-Geolocation - Proof of concept of a IP-to-Geolocation web application. It returns the geographic location of a given IP address. Software engineering 🧑‍💻 STL to gif - A Python script to create a gif file from a STL file. URL-shortener - Proof of concept of a URL shortener application. Feedback-functionality - A simple implementation to add the functionality to collect user provided feedback via website forms to your websites.</description>
+    </item>
+    
     
   </channel>
 </rss>
