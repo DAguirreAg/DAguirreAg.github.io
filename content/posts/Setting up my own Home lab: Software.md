@@ -3,7 +3,7 @@ title: 'Setting up my own Home lab: Software'
 date: 2023-11-25T18:51:39+01:00
 author: Daniel Aguirre
 draft: false
-tags: ["homelab", "raspberrypi", "software", "networking", "SSH", "docker", "Pi-Hole"]
+tags: ["Homelab", "Raspberry Pi", "Software", "Networking", "SSH", "Docker", "Pi-Hole"]
 cover:
   image: images/setting_up_my_own_home_lab_software/static_ip_address_tags.jpeg
 ---

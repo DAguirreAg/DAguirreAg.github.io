@@ -3,7 +3,7 @@ title: 'Setting up my own Home lab: Hardware/Networking'
 date: 2023-11-10T21:59:21+01:00
 author: Daniel Aguirre
 draft: false
-tags: ["homelab", "raspberrypi", "networking"]
+tags: ["Homelab", "Raspberry Pi", "Networking"]
 cover:
   image: images/setting_up_my_own_home_lab_hardware_networking/homelab_network_topology.png
 ---
