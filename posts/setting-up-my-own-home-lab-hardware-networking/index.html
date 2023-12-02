@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>Setting up my own Home lab: Hardware/Networking | Daniel Aguirre</title>
-<meta name="keywords" content="homelab, raspberrypi, networking">
+<meta name="keywords" content="Homelab, Raspberry Pi, Networking">
 <meta name="description" content="As a data engineer, it is quite obvious that I like tinkering with technology, specially with software related stuff. Because of this, some time ago I decided to setup my own simple homelab where I could experiment and run scripts around without worrying about setting up cloud services.
 As such, I have decided to share how I set up my homelab, so others can use it as an inspiration or just have a look at it.">
 <meta name="author" content="Daniel Aguirre">
@@ -101,7 +101,7 @@ As such, I have decided to share how I set up my homelab, so others can use it a
   "name": "Setting up my own Home lab: Hardware\/Networking",
   "description": "As a data engineer, it is quite obvious that I like tinkering with technology, specially with software related stuff. Because of this, some time ago I decided to setup my own simple homelab where I could experiment and run scripts around without worrying about setting up cloud services.\nAs such, I have decided to share how I set up my homelab, so others can use it as an inspiration or just have a look at it.",
   "keywords": [
-    "homelab", "raspberrypi", "networking"
+    "Homelab", "Raspberry Pi", "Networking"
   ],
   "articleBody": "As a data engineer, it is quite obvious that I like tinkering with technology, specially with software related stuff. Because of this, some time ago I decided to setup my own simple homelab where I could experiment and run scripts around without worrying about setting up cloud services.\nAs such, I have decided to share how I set up my homelab, so others can use it as an inspiration or just have a look at it.\n1. Requirements No project can start without the prior requirement gathering. Next I am displaying the main points I want to get in my homelab:\nHardware-wise Low power consumption (as I plan to have projects running 24/7). Low noise (as I will place it near my living room). Low cost setup. Software-wise Monitor network activity. Run projects 24/7. 2. Hardware Based on the requirements and a little bit of research (and availability of the devices), I settled down for the following:\nRaspberry Pi 4 Model B (8Gb ram) Raspberry Pi 3 Model B + TP Link TL-WR940N (Router) Main Desktop PC Seagate Expansion Portable Hard Drive SRD0NF1 (external HDD) Homelab hardware. 3. Network architecture/topology The devices communicate with each other via ethernet connection, all of them connected through a centralized router. Note that even though the router is a single Point-Of-Failure, it is very unlikely to happen, and none of the services I am running are critical enough to consider for a redundant solution. Find below the topology of my homelab:\nOverview of Network topology. Future steps Ideally, I would like to have another Raspberry Pi 4 fully dedicated to experimentation. This should allow me to identify issues that may arise when deploying services in my 24/7 running Raspberry Pi 4, without risking breaking it.\n",
   "wordCount" : "291",
@@ -263,9 +263,9 @@ As such, I have decided to share how I set up my homelab, so others can use it a
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://daguirreag.github.io/tags/homelab/">homelab</a></li>
-      <li><a href="https://daguirreag.github.io/tags/raspberrypi/">raspberrypi</a></li>
-      <li><a href="https://daguirreag.github.io/tags/networking/">networking</a></li>
+      <li><a href="https://daguirreag.github.io/tags/homelab/">Homelab</a></li>
+      <li><a href="https://daguirreag.github.io/tags/raspberry-pi/">Raspberry Pi</a></li>
+      <li><a href="https://daguirreag.github.io/tags/networking/">Networking</a></li>
     </ul>
 <nav class="paginav">
   <a class="prev" href="https://daguirreag.github.io/posts/setting-up-my-own-home-lab-software/">
@@ -278,7 +278,7 @@ As such, I have decided to share how I set up my homelab, so others can use it a
 
 <div class="share-buttons">
     <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up my own Home lab: Hardware/Networking on x"
-        href="https://x.com/intent/tweet/?text=Setting%20up%20my%20own%20Home%20lab%3a%20Hardware%2fNetworking&amp;url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-my-own-home-lab-hardware-networking%2f&amp;hashtags=homelab%2craspberrypi%2cnetworking">
+        href="https://x.com/intent/tweet/?text=Setting%20up%20my%20own%20Home%20lab%3a%20Hardware%2fNetworking&amp;url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-my-own-home-lab-hardware-networking%2f&amp;hashtags=Homelab%2cRaspberryPi%2cNetworking">
         <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
             <path
                 d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z"/>

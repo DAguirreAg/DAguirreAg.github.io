@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>Setting up my own Home lab: Software | Daniel Aguirre</title>
-<meta name="keywords" content="homelab, raspberrypi, software, networking, SSH, docker, Pi-Hole">
+<meta name="keywords" content="Homelab, Raspberry Pi, Software, Networking, SSH, Docker, Pi-Hole">
 <meta name="description" content="With the homelab hardware set up, it is time to start preparing the machines so they can work together. As I intend to use my homelab as a safe and easy to use &ldquo;IT playground&rdquo;, I have decided that the following elements would need to be setup:
 Static IP address on each machine. This facilitates troubleshooting as well as easing the communication between the machines. Remote control software and SSH. This facilitates troubleshooting my &ldquo;remote&rdquo; machines without having to hook a keyboard&#43;mouse&#43;monitor to them.">
 <meta name="author" content="Daniel Aguirre">
@@ -101,7 +101,7 @@ Static IP address on each machine. This facilitates troubleshooting as well as e
   "name": "Setting up my own Home lab: Software",
   "description": "With the homelab hardware set up, it is time to start preparing the machines so they can work together. As I intend to use my homelab as a safe and easy to use \u0026ldquo;IT playground\u0026rdquo;, I have decided that the following elements would need to be setup:\nStatic IP address on each machine. This facilitates troubleshooting as well as easing the communication between the machines. Remote control software and SSH. This facilitates troubleshooting my \u0026ldquo;remote\u0026rdquo; machines without having to hook a keyboard+mouse+monitor to them.",
   "keywords": [
-    "homelab", "raspberrypi", "software", "networking", "SSH", "docker", "Pi-Hole"
+    "Homelab", "Raspberry Pi", "Software", "Networking", "SSH", "Docker", "Pi-Hole"
   ],
   "articleBody": "With the homelab hardware set up, it is time to start preparing the machines so they can work together. As I intend to use my homelab as a safe and easy to use “IT playground”, I have decided that the following elements would need to be setup:\nStatic IP address on each machine. This facilitates troubleshooting as well as easing the communication between the machines. Remote control software and SSH. This facilitates troubleshooting my “remote” machines without having to hook a keyboard+mouse+monitor to them. An Ads and Internet tracker blocking service. This should add extra network protection. Containerization software. This should facilitate the deployment of code as well as reduce issues with package dependencies. 1. Setting up static IP address (in Raspbian) Setting up a static address in a Raspbian machine is quite straightforward.\nGet Raspberry Pi’s IP address by typing: hostname -I. Get my router’s IP address by typing: ip r Get Raspberry Pi’s DNS IP address by typing: nano /etc/resolv.conf Edit the following lines in the dhcpcd.conf file by typing: nano /etc/dhcpcd.conf: interface eth0 static ip_address=192.168.0.132/24 static routers=192.168.0.1 static domain_name_servers=192.168.0.1 (Note that your IP address values may be different) Save changes by pressing ctrl + x. Restart the machine. (Optional) Add the static IP address tags to the machines. Static IP address tags. 2. Setting SSH and Remote control software Follow next steps:\nClick main menu. Click Preferences. Click Raspberry Pi Configuration. Select the tab Interfaces. Activate SSH and VNC. (Note that in order to connect via VNC, I will have to install a VNC remote control software. In my case, I use VNC viewer due to its simplicity and availability in my Ubuntu OS).\nEnabling SSH and VNC. 3. Installing Ads and Internet tracker blocking service (Pi-Hole) Follow next steps:\nVisit https://docs.pi-hole.net/main/basic-install/ and follow the instructions. Visit https://firebog.net/ and note down the lists (urls) wanted to be added into Pi-Hole. Visit Pi-Hole’s address (http://192.168.0.132/admin in my case). Add noted down urls in the Adlist section. Open a terminal window to add recently added lists to Pi-Hole by typing: pihole -g. Go into your specific router’s admin page and make sure to setup the Pi-Hole’s IP address as your primary DNS. 4. Installing Containerization software (Docker) Follow next steps:\nUpdate package manager index: sudo apt update Upgrade packages: sudo apt upgrade Download Docker “installer” script: curl -fsSL https://get.docker.com -o get-docker.sh Execute Docker “installer” script: sudo ./get-docker.sh (Optional) Add user to Docker usergorub to avoid having to type sudo everytime a command needs to be executed: sudo usermod -aG docker [username] ",
   "wordCount" : "422",
@@ -283,12 +283,12 @@ static domain_name_servers=192.168.0.1
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://daguirreag.github.io/tags/homelab/">homelab</a></li>
-      <li><a href="https://daguirreag.github.io/tags/raspberrypi/">raspberrypi</a></li>
-      <li><a href="https://daguirreag.github.io/tags/software/">software</a></li>
-      <li><a href="https://daguirreag.github.io/tags/networking/">networking</a></li>
+      <li><a href="https://daguirreag.github.io/tags/homelab/">Homelab</a></li>
+      <li><a href="https://daguirreag.github.io/tags/raspberry-pi/">Raspberry Pi</a></li>
+      <li><a href="https://daguirreag.github.io/tags/software/">Software</a></li>
+      <li><a href="https://daguirreag.github.io/tags/networking/">Networking</a></li>
       <li><a href="https://daguirreag.github.io/tags/ssh/">SSH</a></li>
-      <li><a href="https://daguirreag.github.io/tags/docker/">docker</a></li>
+      <li><a href="https://daguirreag.github.io/tags/docker/">Docker</a></li>
       <li><a href="https://daguirreag.github.io/tags/pi-hole/">Pi-Hole</a></li>
     </ul>
 <nav class="paginav">
@@ -302,7 +302,7 @@ static domain_name_servers=192.168.0.1
 
 <div class="share-buttons">
     <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up my own Home lab: Software on x"
-        href="https://x.com/intent/tweet/?text=Setting%20up%20my%20own%20Home%20lab%3a%20Software&amp;url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-my-own-home-lab-software%2f&amp;hashtags=homelab%2craspberrypi%2csoftware%2cnetworking%2cSSH%2cdocker%2cPi-Hole">
+        href="https://x.com/intent/tweet/?text=Setting%20up%20my%20own%20Home%20lab%3a%20Software&amp;url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-my-own-home-lab-software%2f&amp;hashtags=Homelab%2cRaspberryPi%2cSoftware%2cNetworking%2cSSH%2cDocker%2cPi-Hole">
         <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
             <path
                 d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z"/>
