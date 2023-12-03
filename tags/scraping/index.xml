@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Scraping on Daniel Aguirre</title>
+    <link>https://daguirreag.github.io/tags/scraping/</link>
+    <description>Recent content in Scraping on Daniel Aguirre</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 02 Dec 2023 22:12:31 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/scraping/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setting up a webscraping service</title>
+      <link>https://daguirreag.github.io/posts/setting-up-a-webscraping-service/</link>
+      <pubDate>Sat, 02 Dec 2023 22:12:31 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/posts/setting-up-a-webscraping-service/</guid>
+      <description>As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.
+However, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.
+Because of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:
+Websites, files, &amp;hellip; can be downloaded into a raw format.</description>
+    </item>
+    
+  </channel>
+</rss>

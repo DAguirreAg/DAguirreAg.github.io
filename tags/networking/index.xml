@@ -6,7 +6,19 @@
     <description>Recent content in Networking on Daniel Aguirre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Nov 2023 18:51:39 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/networking/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 02 Dec 2023 22:12:31 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/networking/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setting up a webscraping service</title>
+      <link>https://daguirreag.github.io/posts/setting-up-a-webscraping-service/</link>
+      <pubDate>Sat, 02 Dec 2023 22:12:31 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/posts/setting-up-a-webscraping-service/</guid>
+      <description>As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.
+However, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.
+Because of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:
+Websites, files, &amp;hellip; can be downloaded into a raw format.</description>
+    </item>
+    
     <item>
       <title>Setting up my own Home lab: Software</title>
       <link>https://daguirreag.github.io/posts/setting-up-my-own-home-lab-software/</link>

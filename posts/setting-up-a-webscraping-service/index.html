@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Setting up a webscraping service | Daniel Aguirre</title>
+<meta name="keywords" content="Homelab, Docker, Scraping, Networking, Services">
+<meta name="description" content="As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.
+However, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.
+Because of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:
+Websites, files, &hellip; can be downloaded into a raw format.">
+<meta name="author" content="">
+<link rel="canonical" href="https://daguirreag.github.io/posts/setting-up-a-webscraping-service/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://daguirreag.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://daguirreag.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://daguirreag.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://daguirreag.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://daguirreag.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Setting up a webscraping service" />
+<meta property="og:description" content="As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.
+However, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.
+Because of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:
+Websites, files, &hellip; can be downloaded into a raw format." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://daguirreag.github.io/posts/setting-up-a-webscraping-service/" />
+<meta property="og:image" content="https://daguirreag.github.io/images/setting_up_a_webscraping_service/webscraping_service_architecture.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-02T22:12:31+01:00" />
+<meta property="article:modified_time" content="2023-12-02T22:12:31+01:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://daguirreag.github.io/images/setting_up_a_webscraping_service/webscraping_service_architecture.png" />
+<meta name="twitter:title" content="Setting up a webscraping service"/>
+<meta name="twitter:description" content="As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.
+However, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.
+Because of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:
+Websites, files, &hellip; can be downloaded into a raw format."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://daguirreag.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Setting up a webscraping service",
+      "item": "https://daguirreag.github.io/posts/setting-up-a-webscraping-service/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Setting up a webscraping service",
+  "name": "Setting up a webscraping service",
+  "description": "As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.\nHowever, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.\nBecause of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:\nWebsites, files, \u0026hellip; can be downloaded into a raw format.",
+  "keywords": [
+    "Homelab", "Docker", "Scraping", "Networking", "Services"
+  ],
+  "articleBody": "As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.\nHowever, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.\nBecause of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:\nWebsites, files, … can be downloaded into a raw format. Raw files processing can be done in the right order. Data is made available for analytics/reporting/… Monitoring capabilities are available. 1. Requirements For this to work, I identified the following tools as basic requirements:\nAiflow (Orchestration tool): As each project’s logic may be different (how and in which order files need to be processed), an orchestration tool is needed to keep track of the status of each project as well as ensure the right order of execution. Selenium (Browser automation tool): As most of the projects will require of downloading data from the web, a browser automation tool is needed to avoid spawning the same browser automation service. Docker compose: To keep everything consistent, isolated and easily replicable, I will be setting everything via a single Docker compose file. This allows me to easily manage all services, as well as ensure the services are discoverable between them (as docker attaches ALL the containers in the SAME DOCKER COMPOSE FILE to the SAME NETWORK). 2. Webscraping service architecture As the webscraping service will be installed in a single host (for the time being at least), the architecture will remain very simple. Find below an overview of the architecture:\nOverview of the webscraping service architecture. (Note that my idea is to modify the architecture to a micro-service oriented architecture once the amount of projects starts becoming bigger. However, for the time being the proposed architecture should be enough for my needs, as a micro-service architecture raises unique challenges (registering the services, making the services discoverable, managing different docker instances, …).)\n2.1 Design choices I will like to keep Airflow as independent as possible, just adding copying the dags to its folder from the original repository. I decided to go for this approach, because as the number of projects increases, it will become very hard to know where a particular dag belongs to, and as each project contains its own order/logic, it is smart to keep as close as possible to the source code.\n3. Setting the service As mentioned in the introduction section, as all the services will be living in the same host machine, one docker compose file should be enough to setup everything correctly. However, certain steps must be followed before starting up the docker containers.\n3.1. Preparation 3.1.1. Preparing Airflow I will start by cding to the location where Airflow installation will reside. Once there, I will start by creating the following file:\ndocker-compose.yml # Licensed to the Apache Software Foundation (ASF) under one # or more contributor license agreements. See the NOTICE file # distributed with this work for additional information # regarding copyright ownership. The ASF licenses this file # to you under the Apache License, Version 2.0 (the # \"License\"); you may not use this file except in compliance # with the License. You may obtain a copy of the License at # # http://www.apache.org/licenses/LICENSE-2.0 # # Unless required by applicable law or agreed to in writing, # software distributed under the License is distributed on an # \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY # KIND, either express or implied. See the License for the # specific language governing permissions and limitations # under the License. # # Basic Airflow cluster configuration for CeleryExecutor with Redis and PostgreSQL. # # WARNING: This configuration is for local development. Do not use it in a production deployment. # # This configuration supports basic configuration using environment variables or an .env file # The following variables are supported: # # AIRFLOW_IMAGE_NAME - Docker image name used to run Airflow. # Default: apache/airflow:2.7.3 # AIRFLOW_UID - User ID in Airflow containers # Default: 50000 # AIRFLOW_PROJ_DIR - Base path to which all the files will be volumed. # Default: . # Those configurations are useful mostly in case of standalone testing/running Airflow in test/try-out mode # # _AIRFLOW_WWW_USER_USERNAME - Username for the administrator account (if requested). # Default: airflow # _AIRFLOW_WWW_USER_PASSWORD - Password for the administrator account (if requested). # Default: airflow # _PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting all containers. # Use this option ONLY for quick checks. Installing requirements at container # startup is done EVERY TIME the service is started. # A better way is to build a custom image or extend the official image # as described in https://airflow.apache.org/docs/docker-stack/build.html. # Default: '' # # Feel free to modify this file to suit your needs. --- version: '3.8' x-airflow-common: \u0026airflow-common # In order to add custom dependencies or upgrade provider packages you can use your extended image. # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml # and uncomment the \"build\" line below, Then run `docker-compose build` to build the images. image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.3} # build: . environment: \u0026airflow-common-env AIRFLOW__CORE__EXECUTOR: CeleryExecutor AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow # For backward compatibility, with Airflow \u003c2.3 AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0 AIRFLOW__CORE__FERNET_KEY: '' AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true' AIRFLOW__CORE__LOAD_EXAMPLES: 'false' AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session' # yamllint disable rule:line-length # Use simple http server on scheduler for health checks # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server # yamllint enable rule:line-length AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true' # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks # for other purpose (development, test and especially production usage) build/extend Airflow image. _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-} volumes: - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins user: \"${AIRFLOW_UID:-50000}:0\" depends_on: \u0026airflow-common-depends-on redis: condition: service_healthy postgres: condition: service_healthy services: #### Non-Airflow related containers #### #### Airflow related containers #### postgres: image: postgres:13 environment: POSTGRES_USER: airflow POSTGRES_PASSWORD: airflow POSTGRES_DB: airflow volumes: - postgres-db-volume:/var/lib/postgresql/data healthcheck: test: [\"CMD\", \"pg_isready\", \"-U\", \"airflow\"] interval: 10s retries: 5 start_period: 5s restart: always ports: - \"5432:5432\" expose: - \"5432\" redis: image: redis:latest expose: - 6379 healthcheck: test: [\"CMD\", \"redis-cli\", \"ping\"] interval: 10s timeout: 30s retries: 50 start_period: 30s restart: always airflow-webserver: \u003c\u003c: *airflow-common command: webserver ports: - \"8080:8080\" healthcheck: test: [\"CMD\", \"curl\", \"--fail\", \"http://localhost:8080/health\"] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-scheduler: \u003c\u003c: *airflow-common command: scheduler healthcheck: test: [\"CMD\", \"curl\", \"--fail\", \"http://localhost:8974/health\"] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-worker: \u003c\u003c: *airflow-common command: celery worker healthcheck: # yamllint disable rule:line-length test: - \"CMD-SHELL\" - 'celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d \"celery@$${HOSTNAME}\" || celery --app airflow.executors.celery_executor.app inspect ping -d \"celery@$${HOSTNAME}\"' interval: 30s timeout: 10s retries: 5 start_period: 30s environment: \u003c\u003c: *airflow-common-env # Required to handle warm shutdown of the celery workers properly # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation DUMB_INIT_SETSID: \"0\" restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-triggerer: \u003c\u003c: *airflow-common command: triggerer healthcheck: test: [\"CMD-SHELL\", 'airflow jobs check --job-type TriggererJob --hostname \"$${HOSTNAME}\"'] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-init: \u003c\u003c: *airflow-common entrypoint: /bin/bash # yamllint disable rule:line-length command: - -c - | function ver() { printf \"%04d%04d%04d%04d\" $${1//./ } } airflow_version=$$(AIRFLOW__LOGGING__LOGGING_LEVEL=INFO \u0026\u0026 gosu airflow airflow version) airflow_version_comparable=$$(ver $${airflow_version}) min_airflow_version=2.2.0 min_airflow_version_comparable=$$(ver $${min_airflow_version}) if (( airflow_version_comparable \u003c min_airflow_version_comparable )); then echo echo -e \"\\033[1;31mERROR!!!: Too old Airflow version $${airflow_version}!\\e[0m\" echo \"The minimum Airflow version supported: $${min_airflow_version}. Only use this or higher!\" echo exit 1 fi if [[ -z \"${AIRFLOW_UID}\" ]]; then echo echo -e \"\\033[1;33mWARNING!!!: AIRFLOW_UID not set!\\e[0m\" echo \"If you are on Linux, you SHOULD follow the instructions below to set \" echo \"AIRFLOW_UID environment variable, otherwise files will be owned by root.\" echo \"For other operating systems you can get rid of the warning with manually created .env file:\" echo \" See: https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#setting-the-right-airflow-user\" echo fi one_meg=1048576 mem_available=$$(($$(getconf _PHYS_PAGES) * $$(getconf PAGE_SIZE) / one_meg)) cpus_available=$$(grep -cE 'cpu[0-9]+' /proc/stat) disk_available=$$(df / | tail -1 | awk '{print $$4}') warning_resources=\"false\" if (( mem_available \u003c 4000 )) ; then echo echo -e \"\\033[1;33mWARNING!!!: Not enough memory available for Docker.\\e[0m\" echo \"At least 4GB of memory required. You have $$(numfmt --to iec $$((mem_available * one_meg)))\" echo warning_resources=\"true\" fi if (( cpus_available \u003c 2 )); then echo echo -e \"\\033[1;33mWARNING!!!: Not enough CPUS available for Docker.\\e[0m\" echo \"At least 2 CPUs recommended. You have $${cpus_available}\" echo warning_resources=\"true\" fi if (( disk_available \u003c one_meg * 10 )); then echo echo -e \"\\033[1;33mWARNING!!!: Not enough Disk space available for Docker.\\e[0m\" echo \"At least 10 GBs recommended. You have $$(numfmt --to iec $$((disk_available * 1024 )))\" echo warning_resources=\"true\" fi if [[ $${warning_resources} == \"true\" ]]; then echo echo -e \"\\033[1;33mWARNING!!!: You have not enough resources to run Airflow (see above)!\\e[0m\" echo \"Please follow the instructions to increase amount of resources available:\" echo \" https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#before-you-begin\" echo fi mkdir -p /sources/logs /sources/dags /sources/plugins chown -R \"${AIRFLOW_UID}:0\" /sources/{logs,dags,plugins} exec /entrypoint airflow version # yamllint enable rule:line-length environment: \u003c\u003c: *airflow-common-env _AIRFLOW_DB_MIGRATE: 'true' _AIRFLOW_WWW_USER_CREATE: 'true' _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow} _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow} _PIP_ADDITIONAL_REQUIREMENTS: '' user: \"0:0\" volumes: - ${AIRFLOW_PROJ_DIR:-.}:/sources airflow-cli: \u003c\u003c: *airflow-common profiles: - debug environment: \u003c\u003c: *airflow-common-env CONNECTION_CHECK_MAX_COUNT: \"0\" # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252 command: - bash - -c - airflow # You can enable flower by adding \"--profile flower\" option e.g. docker-compose --profile flower up # or by explicitly targeted on the command line e.g. docker-compose up flower. # See: https://docs.docker.com/compose/profiles/ flower: \u003c\u003c: *airflow-common command: celery flower profiles: - flower ports: - \"5555:5555\" healthcheck: test: [\"CMD\", \"curl\", \"--fail\", \"http://localhost:5555/\"] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully volumes: postgres-db-volume: Afterwards, I will create the required Airflow folders and files in the same location:\nmkdir -p ./dags ./logs ./plugins ./config echo -e \"AIRFLOW_UID=$(id -u)\" \u003e .env After previous steps, the folder structure will look like this:\n└── Airflow ├── config ├── dags ├── docker-compose.yaml ├── .env ├── logs └── plugins Once the folder structure is created, we can proceed to initialize Airflow:\ndocker compose up airflow-init (More detailed information in here)\n3.1.2. Preparing Project I will start by cding to the location where projects’ repos will reside. Once there I will start by cloning the repositories. In my case, the folder structure will look like this:\n└── GitHub └── project_1 ├── dockerfile ├── docker-compose.yml ├── requirements.txt └── main.py Example files dockerfile\nFROM python:3.10-bullseye WORKDIR /app COPY requirements.txt ./ RUN pip install --no-cache-dir -r requirements.txt COPY . ./ CMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"80\"] docker-compose.yml\nservices: project_1: image: project_1 container_name: project_1 volumes: - ./:/app/downloads ports: - \"8101:80\" expose: - \"80\" restart: always main.py\nfrom fastapi import FastAPI from starlette.responses import RedirectResponse import datetime import os app = FastAPI() @app.get(\"/\") def main(): response = RedirectResponse(url='/docs') return response @app.get(\"/create_file\") def create_file(): # Get filename filename_prefix = 'file' filename_suffix = str(datetime.datetime.now()).replace(':','').replace('-','').replace(' ','_').split('.')[0] filename = '_'.join([filename_prefix, filename_suffix]) + '.txt' filepath = 'downloads' # Create file f = open(os.path.join(filepath, filename), \"a\") f.write(\"Hello world!!\") f.close() return None requirement.txt\nannotated-types==0.6.0 anyio==3.7.1 click==8.1.7 exceptiongroup==1.2.0 fastapi==0.104.1 h11==0.14.0 idna==3.6 pydantic==2.5.2 pydantic-core==2.14.5 sniffio==1.3.0 starlette==0.27.0 typing-extensions==4.8.0 uvicorn==0.24.0.post1 With the repository cloned I will build the image of the project by typing:\ndocker build -t project_1 . (Note that I have decided to manually build the images every time something changes as it is the easiest way to manage it this way. Ideally I would like to have an automatic CI/CD workflow setup that will check and deploy the changes once done, but due to the nature of my projects (which most are only developed by me), it wouldn’t add a lot of value.)\n3.1.3. Adding a project to the Docker-compose With Airflow and the project image ready, it is time to add the the project to the docker-compose.yml file, so it can be started up/shut down at the same time as the other services.\nStart by opening the location of the docker-compose.yml. In this file, I will locate the following lines:\nservices: #### Non-Airflow related containers #### #### Airflow related containers #### postgres: image: postgres:13 environment: POSTGRES_USER: airflow POSTGRES_PASSWORD: airflow ... Once the section where the extra services will be defined is located, I will proceed to add the following lines:\nproject_1: image: project_1 container_name: project_1 volumes: - /home/daniel/Documents/Datalake/project_1:/app/downloads ports: - \"8101:80\" expose: - \"80\" restart: always The docker-compose.yml file will look like this: docker-compose.yml # Licensed to the Apache Software Foundation (ASF) under one # or more contributor license agreements. See the NOTICE file # distributed with this work for additional information # regarding copyright ownership. The ASF licenses this file # to you under the Apache License, Version 2.0 (the # \"License\"); you may not use this file except in compliance # with the License. You may obtain a copy of the License at # # http://www.apache.org/licenses/LICENSE-2.0 # # Unless required by applicable law or agreed to in writing, # software distributed under the License is distributed on an # \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY # KIND, either express or implied. See the License for the # specific language governing permissions and limitations # under the License. # # Basic Airflow cluster configuration for CeleryExecutor with Redis and PostgreSQL. # # WARNING: This configuration is for local development. Do not use it in a production deployment. # # This configuration supports basic configuration using environment variables or an .env file # The following variables are supported: # # AIRFLOW_IMAGE_NAME - Docker image name used to run Airflow. # Default: apache/airflow:2.7.3 # AIRFLOW_UID - User ID in Airflow containers # Default: 50000 # AIRFLOW_PROJ_DIR - Base path to which all the files will be volumed. # Default: . # Those configurations are useful mostly in case of standalone testing/running Airflow in test/try-out mode # # _AIRFLOW_WWW_USER_USERNAME - Username for the administrator account (if requested). # Default: airflow # _AIRFLOW_WWW_USER_PASSWORD - Password for the administrator account (if requested). # Default: airflow # _PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting all containers. # Use this option ONLY for quick checks. Installing requirements at container # startup is done EVERY TIME the service is started. # A better way is to build a custom image or extend the official image # as described in https://airflow.apache.org/docs/docker-stack/build.html. # Default: '' # # Feel free to modify this file to suit your needs. --- version: '3.8' x-airflow-common: \u0026airflow-common # In order to add custom dependencies or upgrade provider packages you can use your extended image. # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml # and uncomment the \"build\" line below, Then run `docker-compose build` to build the images. image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.3} # build: . environment: \u0026airflow-common-env AIRFLOW__CORE__EXECUTOR: CeleryExecutor AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow # For backward compatibility, with Airflow \u003c2.3 AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0 AIRFLOW__CORE__FERNET_KEY: '' AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true' AIRFLOW__CORE__LOAD_EXAMPLES: 'false' AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session' # yamllint disable rule:line-length # Use simple http server on scheduler for health checks # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server # yamllint enable rule:line-length AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true' # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks # for other purpose (development, test and especially production usage) build/extend Airflow image. _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-} volumes: - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins user: \"${AIRFLOW_UID:-50000}:0\" depends_on: \u0026airflow-common-depends-on redis: condition: service_healthy postgres: condition: service_healthy services: #### Non-Airflow related containers #### project_1: image: project_1 container_name: project_1 volumes: - /home/daniel/Documents/Datalake/project_1:/app/downloads ports: - \"8101:80\" expose: - \"80\" restart: always #### Airflow related containers #### postgres: image: postgres:13 environment: POSTGRES_USER: airflow POSTGRES_PASSWORD: airflow POSTGRES_DB: airflow volumes: - postgres-db-volume:/var/lib/postgresql/data healthcheck: test: [\"CMD\", \"pg_isready\", \"-U\", \"airflow\"] interval: 10s retries: 5 start_period: 5s restart: always ports: - \"5432:5432\" expose: - \"5432\" redis: image: redis:latest expose: - 6379 healthcheck: test: [\"CMD\", \"redis-cli\", \"ping\"] interval: 10s timeout: 30s retries: 50 start_period: 30s restart: always airflow-webserver: \u003c\u003c: *airflow-common command: webserver ports: - \"8080:8080\" healthcheck: test: [\"CMD\", \"curl\", \"--fail\", \"http://localhost:8080/health\"] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-scheduler: \u003c\u003c: *airflow-common command: scheduler healthcheck: test: [\"CMD\", \"curl\", \"--fail\", \"http://localhost:8974/health\"] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-worker: \u003c\u003c: *airflow-common command: celery worker healthcheck: # yamllint disable rule:line-length test: - \"CMD-SHELL\" - 'celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d \"celery@$${HOSTNAME}\" || celery --app airflow.executors.celery_executor.app inspect ping -d \"celery@$${HOSTNAME}\"' interval: 30s timeout: 10s retries: 5 start_period: 30s environment: \u003c\u003c: *airflow-common-env # Required to handle warm shutdown of the celery workers properly # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation DUMB_INIT_SETSID: \"0\" restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-triggerer: \u003c\u003c: *airflow-common command: triggerer healthcheck: test: [\"CMD-SHELL\", 'airflow jobs check --job-type TriggererJob --hostname \"$${HOSTNAME}\"'] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully airflow-init: \u003c\u003c: *airflow-common entrypoint: /bin/bash # yamllint disable rule:line-length command: - -c - | function ver() { printf \"%04d%04d%04d%04d\" $${1//./ } } airflow_version=$$(AIRFLOW__LOGGING__LOGGING_LEVEL=INFO \u0026\u0026 gosu airflow airflow version) airflow_version_comparable=$$(ver $${airflow_version}) min_airflow_version=2.2.0 min_airflow_version_comparable=$$(ver $${min_airflow_version}) if (( airflow_version_comparable \u003c min_airflow_version_comparable )); then echo echo -e \"\\033[1;31mERROR!!!: Too old Airflow version $${airflow_version}!\\e[0m\" echo \"The minimum Airflow version supported: $${min_airflow_version}. Only use this or higher!\" echo exit 1 fi if [[ -z \"${AIRFLOW_UID}\" ]]; then echo echo -e \"\\033[1;33mWARNING!!!: AIRFLOW_UID not set!\\e[0m\" echo \"If you are on Linux, you SHOULD follow the instructions below to set \" echo \"AIRFLOW_UID environment variable, otherwise files will be owned by root.\" echo \"For other operating systems you can get rid of the warning with manually created .env file:\" echo \" See: https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#setting-the-right-airflow-user\" echo fi one_meg=1048576 mem_available=$$(($$(getconf _PHYS_PAGES) * $$(getconf PAGE_SIZE) / one_meg)) cpus_available=$$(grep -cE 'cpu[0-9]+' /proc/stat) disk_available=$$(df / | tail -1 | awk '{print $$4}') warning_resources=\"false\" if (( mem_available \u003c 4000 )) ; then echo echo -e \"\\033[1;33mWARNING!!!: Not enough memory available for Docker.\\e[0m\" echo \"At least 4GB of memory required. You have $$(numfmt --to iec $$((mem_available * one_meg)))\" echo warning_resources=\"true\" fi if (( cpus_available \u003c 2 )); then echo echo -e \"\\033[1;33mWARNING!!!: Not enough CPUS available for Docker.\\e[0m\" echo \"At least 2 CPUs recommended. You have $${cpus_available}\" echo warning_resources=\"true\" fi if (( disk_available \u003c one_meg * 10 )); then echo echo -e \"\\033[1;33mWARNING!!!: Not enough Disk space available for Docker.\\e[0m\" echo \"At least 10 GBs recommended. You have $$(numfmt --to iec $$((disk_available * 1024 )))\" echo warning_resources=\"true\" fi if [[ $${warning_resources} == \"true\" ]]; then echo echo -e \"\\033[1;33mWARNING!!!: You have not enough resources to run Airflow (see above)!\\e[0m\" echo \"Please follow the instructions to increase amount of resources available:\" echo \" https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#before-you-begin\" echo fi mkdir -p /sources/logs /sources/dags /sources/plugins chown -R \"${AIRFLOW_UID}:0\" /sources/{logs,dags,plugins} exec /entrypoint airflow version # yamllint enable rule:line-length environment: \u003c\u003c: *airflow-common-env _AIRFLOW_DB_MIGRATE: 'true' _AIRFLOW_WWW_USER_CREATE: 'true' _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow} _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow} _PIP_ADDITIONAL_REQUIREMENTS: '' user: \"0:0\" volumes: - ${AIRFLOW_PROJ_DIR:-.}:/sources airflow-cli: \u003c\u003c: *airflow-common profiles: - debug environment: \u003c\u003c: *airflow-common-env CONNECTION_CHECK_MAX_COUNT: \"0\" # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252 command: - bash - -c - airflow # You can enable flower by adding \"--profile flower\" option e.g. docker-compose --profile flower up # or by explicitly targeted on the command line e.g. docker-compose up flower. # See: https://docs.docker.com/compose/profiles/ flower: \u003c\u003c: *airflow-common command: celery flower profiles: - flower ports: - \"5555:5555\" healthcheck: test: [\"CMD\", \"curl\", \"--fail\", \"http://localhost:5555/\"] interval: 30s timeout: 10s retries: 5 start_period: 30s restart: always depends_on: \u003c\u003c: *airflow-common-depends-on airflow-init: condition: service_completed_successfully volumes: postgres-db-volume: Finally, I test that everything is working by typing:\ndocker compose up 3.1.4. Adding customs dags to Airflow With the services running, it is time to add the a DAG to Airflow. In order to do so, I just need to add the following dag file to the dag folder.\nproject_1_dag.py\nfrom airflow import DAG from airflow.operators.python import PythonOperator, BranchPythonOperator from airflow.operators.bash import BashOperator from datetime import datetime import requests PORT = 80 def call_api(url: str): response = requests.get(url) if not (200\u003c=response.status_code\u003c=299): raise Exception('Something went wrong.') def _create_file(): url = f\"http://project_1:{PORT}/create_file\" call_api(url) with DAG(\"project_1_dag\", # Dag id start_date=datetime(2023, 10 ,5), # start date, the 1st of January 2023 schedule='@weekly', # Cron expression, here @daily means once every day. catchup=False): # Tasks are implemented under the dag object create_file = PythonOperator( task_id=\"create_file\", python_callable=_create_file ) create_file Notice how as all the services belong to the same network, I can call each service by typing the service’s name directly: \"http://project_1:{PORT}/create_file\".\nSuccessful Airflow ran. 3.2. Running the services With everything ready, starting and shutting down everything becomes extremely simple. It only requires of typing the following in the location of my docker-compose.yml file:\ndocker compose up Just for explanation’s shake, this is how my current setup looks like:\n├── Airflow │ ├── config │ ├── dags │ ├── docker-compose.yaml │ ├── .env │ ├── logs │ └── plugins └── GitHub │ ├── project_1 │ ├── project_2 │ └── project_3 └── Datalake ├── project_1 ├── project_2 └── project_3 4. Troubleshooting Although most services should be accessible via a browser (the docker ports will be forwarded to host’s ports), there may be situations in which they won’t work. For these instances, it is a good idea to have a troubleshooting docker image ready that could connect to the troubling containers. I like to use the nicolaka/netshoot image to troubleshoot as it contains most of the tools you will need when troubleshooting network related issues.\nTo troubleshoot an already running docker container, attach the netshoot container to that container’s network by typing:\ndocker run -it --net container: nicolaka/netshoot Notes on Airflow For simplicity shake, the airflow logs and dags are located in the same directory as the compose file. This may become an issue if a heavy use of Airflow is done (as it logs will start taking too much space). Having dags into the same location is also not ideal, as there is no easy way on putting those dags under version control. However, for my use cases, these both issues are very unlikely, so I decided to go for the easier setup.\nAbove points will be considered (if/when) my new micro-service centered architecture is setup. As the main idea behind that architecture would be to increase the scalability and fault-tolerant of the system.\n",
+  "wordCount" : "3631",
+  "inLanguage": "en",
+  "image":"https://daguirreag.github.io/images/setting_up_a_webscraping_service/webscraping_service_architecture.png","datePublished": "2023-12-02T22:12:31+01:00",
+  "dateModified": "2023-12-02T22:12:31+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://daguirreag.github.io/posts/setting-up-a-webscraping-service/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Daniel Aguirre",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://daguirreag.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://daguirreag.github.io/" accesskey="h" title="Daniel Aguirre (Alt + H)">Daniel Aguirre</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://daguirreag.github.io/archive/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://daguirreag.github.io/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://daguirreag.github.io/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://daguirreag.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://daguirreag.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Setting up a webscraping service
+    </h1>
+    <div class="post-meta"><span title='2023-12-02 22:12:31 +0100 +0100'>December 2, 2023</span>&nbsp;·&nbsp;18 min
+
+</div>
+  </header> 
+<figure class="entry-cover"><img loading="lazy" src="https://daguirreag.github.io/images/setting_up_a_webscraping_service/webscraping_service_architecture.png" alt="">
+        
+</figure>
+  <div class="post-content"><p>As a data engineer is quite common to be on the lookup for useful (or at least interesting) websites to scrape data from.</p>
+<p>However, it is quite common to have different projects to start the same (e.g. downloading the HTML from the internet) but to end up processing them (ETL) in different ways.</p>
+<p>Because of this, I have setup a simple Raspberry Pi as my centralized webscraping service where:</p>
+<ul>
+<li>Websites, files, &hellip; can be downloaded into a raw format.</li>
+<li>Raw files processing can be done in the right order.</li>
+<li>Data is made available for analytics/reporting/&hellip;</li>
+<li>Monitoring capabilities are available.</li>
+</ul>
+<h2 id="1-requirements">1. Requirements<a hidden class="anchor" aria-hidden="true" href="#1-requirements">#</a></h2>
+<p>For this to work, I identified the following tools as basic requirements:</p>
+<ul>
+<li>Aiflow (Orchestration tool): As each project&rsquo;s logic may be different (how and in which order files need to be processed), an orchestration tool is needed to keep track of the status of each project as well as ensure the right order of execution.</li>
+<li>Selenium (Browser automation tool): As most of the projects will require of downloading data from the web, a browser automation tool is needed to avoid spawning the same browser automation service.</li>
+<li>Docker compose: To keep everything consistent, isolated and easily replicable, I will be setting everything via a <strong>single</strong> Docker compose file. This allows me to easily manage all services, as well as ensure the services are discoverable between them (as docker attaches ALL the containers in the SAME DOCKER COMPOSE FILE to the SAME NETWORK).</li>
+</ul>
+<h2 id="2-webscraping-service-architecture">2. Webscraping service architecture<a hidden class="anchor" aria-hidden="true" href="#2-webscraping-service-architecture">#</a></h2>
+<p>As the webscraping service will be installed in a single host (for the time being at least), the architecture will remain very simple. Find below an overview of the architecture:</p>
+<figure>
+    <img loading="lazy" src="/images/setting_up_a_webscraping_service/webscraping_service_architecture.png"
+         alt="Overview of the webscraping service architecture." width="100%"/> <figcaption>
+            Overview of the webscraping service architecture.
+        </figcaption>
+</figure>
+
+<p>(Note that my idea is to modify the architecture to a micro-service oriented architecture once the amount of projects starts becoming bigger. However, for the time being the proposed architecture should be enough for my needs, as a micro-service architecture raises unique challenges (registering the services, making the services discoverable, managing different docker instances, &hellip;).)</p>
+<h3 id="21-design-choices">2.1 Design choices<a hidden class="anchor" aria-hidden="true" href="#21-design-choices">#</a></h3>
+<p>I will like to keep Airflow as independent as possible, just adding copying the dags to its folder from the original repository. I decided to go for this approach, because as the number of projects increases, it will become very hard to know where a particular dag belongs to, and as each project contains its own order/logic, it is smart to keep as close as possible to the source code.</p>
+<h2 id="3-setting-the-service">3. Setting the service<a hidden class="anchor" aria-hidden="true" href="#3-setting-the-service">#</a></h2>
+<p>As mentioned in the introduction section, as all the services will be living in the same host machine, one docker compose file should be enough to setup everything correctly. However, certain steps must be followed before starting up the docker containers.</p>
+<h3 id="31-preparation">3.1. Preparation<a hidden class="anchor" aria-hidden="true" href="#31-preparation">#</a></h3>
+<h4 id="311-preparing-airflow">3.1.1. Preparing Airflow<a hidden class="anchor" aria-hidden="true" href="#311-preparing-airflow">#</a></h4>
+<p>I will start by <code>cd</code>ing to the location where Airflow installation will reside. Once there, I will start by creating the following file:</p>
+<details>
+    <summary><code>docker-compose.yml</code></summary>
+    <pre tabindex="0"><code># Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# &#34;License&#34;); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# &#34;AS IS&#34; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+# Basic Airflow cluster configuration for CeleryExecutor with Redis and PostgreSQL.
+#
+# WARNING: This configuration is for local development. Do not use it in a production deployment.
+#
+# This configuration supports basic configuration using environment variables or an .env file
+# The following variables are supported:
+#
+# AIRFLOW_IMAGE_NAME           - Docker image name used to run Airflow.
+#                                Default: apache/airflow:2.7.3
+# AIRFLOW_UID                  - User ID in Airflow containers
+#                                Default: 50000
+# AIRFLOW_PROJ_DIR             - Base path to which all the files will be volumed.
+#                                Default: .
+# Those configurations are useful mostly in case of standalone testing/running Airflow in test/try-out mode
+#
+# _AIRFLOW_WWW_USER_USERNAME   - Username for the administrator account (if requested).
+#                                Default: airflow
+# _AIRFLOW_WWW_USER_PASSWORD   - Password for the administrator account (if requested).
+#                                Default: airflow
+# _PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting all containers.
+#                                Use this option ONLY for quick checks. Installing requirements at container
+#                                startup is done EVERY TIME the service is started.
+#                                A better way is to build a custom image or extend the official image
+#                                as described in https://airflow.apache.org/docs/docker-stack/build.html.
+#                                Default: &#39;&#39;
+#
+# Feel free to modify this file to suit your needs.
+---
+version: &#39;3.8&#39;
+x-airflow-common:
+  &amp;airflow-common
+  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
+  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
+  # and uncomment the &#34;build&#34; line below, Then run `docker-compose build` to build the images.
+  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.3}
+  # build: .
+  environment:
+    &amp;airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    # For backward compatibility, with Airflow &lt;2.3
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__CORE__FERNET_KEY: &#39;&#39;
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: &#39;true&#39;
+    AIRFLOW__CORE__LOAD_EXAMPLES: &#39;false&#39;
+    AIRFLOW__API__AUTH_BACKENDS: &#39;airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session&#39;
+    # yamllint disable rule:line-length
+    # Use simple http server on scheduler for health checks
+    # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
+    # yamllint enable rule:line-length
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: &#39;true&#39;
+    # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
+    # for other purpose (development, test and especially production usage) build/extend Airflow image.
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+  volumes:
+    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
+    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+  user: &#34;${AIRFLOW_UID:-50000}:0&#34;
+  depends_on:
+    &amp;airflow-common-depends-on
+    redis:
+      condition: service_healthy
+    postgres:
+      condition: service_healthy
+
+services:
+
+  #### Non-Airflow related containers ####
+
+  #### Airflow related containers ####
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;pg_isready&#34;, &#34;-U&#34;, &#34;airflow&#34;]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    ports:
+      - &#34;5432:5432&#34;
+    expose:
+      - &#34;5432&#34;
+
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;redis-cli&#34;, &#34;ping&#34;]
+      interval: 10s
+      timeout: 30s
+      retries: 50
+      start_period: 30s
+    restart: always
+
+  airflow-webserver:
+    &lt;&lt;: *airflow-common
+    command: webserver
+    ports:
+      - &#34;8080:8080&#34;
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;curl&#34;, &#34;--fail&#34;, &#34;http://localhost:8080/health&#34;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    &lt;&lt;: *airflow-common
+    command: scheduler
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;curl&#34;, &#34;--fail&#34;, &#34;http://localhost:8974/health&#34;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-worker:
+    &lt;&lt;: *airflow-common
+    command: celery worker
+    healthcheck:
+      # yamllint disable rule:line-length
+      test:
+        - &#34;CMD-SHELL&#34;
+        - &#39;celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d &#34;celery@$${HOSTNAME}&#34; || celery --app airflow.executors.celery_executor.app inspect ping -d &#34;celery@$${HOSTNAME}&#34;&#39;
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    environment:
+      &lt;&lt;: *airflow-common-env
+      # Required to handle warm shutdown of the celery workers properly
+      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+      DUMB_INIT_SETSID: &#34;0&#34;
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-triggerer:
+    &lt;&lt;: *airflow-common
+    command: triggerer
+    healthcheck:
+      test: [&#34;CMD-SHELL&#34;, &#39;airflow jobs check --job-type TriggererJob --hostname &#34;$${HOSTNAME}&#34;&#39;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-init:
+    &lt;&lt;: *airflow-common
+    entrypoint: /bin/bash
+    # yamllint disable rule:line-length
+    command:
+      - -c
+      - |
+        function ver() {
+          printf &#34;%04d%04d%04d%04d&#34; $${1//./ }
+        }
+        airflow_version=$$(AIRFLOW__LOGGING__LOGGING_LEVEL=INFO &amp;&amp; gosu airflow airflow version)
+        airflow_version_comparable=$$(ver $${airflow_version})
+        min_airflow_version=2.2.0
+        min_airflow_version_comparable=$$(ver $${min_airflow_version})
+        if (( airflow_version_comparable &lt; min_airflow_version_comparable )); then
+          echo
+          echo -e &#34;\033[1;31mERROR!!!: Too old Airflow version $${airflow_version}!\e[0m&#34;
+          echo &#34;The minimum Airflow version supported: $${min_airflow_version}. Only use this or higher!&#34;
+          echo
+          exit 1
+        fi
+        if [[ -z &#34;${AIRFLOW_UID}&#34; ]]; then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: AIRFLOW_UID not set!\e[0m&#34;
+          echo &#34;If you are on Linux, you SHOULD follow the instructions below to set &#34;
+          echo &#34;AIRFLOW_UID environment variable, otherwise files will be owned by root.&#34;
+          echo &#34;For other operating systems you can get rid of the warning with manually created .env file:&#34;
+          echo &#34;    See: https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#setting-the-right-airflow-user&#34;
+          echo
+        fi
+        one_meg=1048576
+        mem_available=$$(($$(getconf _PHYS_PAGES) * $$(getconf PAGE_SIZE) / one_meg))
+        cpus_available=$$(grep -cE &#39;cpu[0-9]+&#39; /proc/stat)
+        disk_available=$$(df / | tail -1 | awk &#39;{print $$4}&#39;)
+        warning_resources=&#34;false&#34;
+        if (( mem_available &lt; 4000 )) ; then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: Not enough memory available for Docker.\e[0m&#34;
+          echo &#34;At least 4GB of memory required. You have $$(numfmt --to iec $$((mem_available * one_meg)))&#34;
+          echo
+          warning_resources=&#34;true&#34;
+        fi
+        if (( cpus_available &lt; 2 )); then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: Not enough CPUS available for Docker.\e[0m&#34;
+          echo &#34;At least 2 CPUs recommended. You have $${cpus_available}&#34;
+          echo
+          warning_resources=&#34;true&#34;
+        fi
+        if (( disk_available &lt; one_meg * 10 )); then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: Not enough Disk space available for Docker.\e[0m&#34;
+          echo &#34;At least 10 GBs recommended. You have $$(numfmt --to iec $$((disk_available * 1024 )))&#34;
+          echo
+          warning_resources=&#34;true&#34;
+        fi
+        if [[ $${warning_resources} == &#34;true&#34; ]]; then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: You have not enough resources to run Airflow (see above)!\e[0m&#34;
+          echo &#34;Please follow the instructions to increase amount of resources available:&#34;
+          echo &#34;   https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#before-you-begin&#34;
+          echo
+        fi
+        mkdir -p /sources/logs /sources/dags /sources/plugins
+        chown -R &#34;${AIRFLOW_UID}:0&#34; /sources/{logs,dags,plugins}
+        exec /entrypoint airflow version
+    # yamllint enable rule:line-length
+    environment:
+      &lt;&lt;: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: &#39;true&#39;
+      _AIRFLOW_WWW_USER_CREATE: &#39;true&#39;
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _PIP_ADDITIONAL_REQUIREMENTS: &#39;&#39;
+    user: &#34;0:0&#34;
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}:/sources
+
+  airflow-cli:
+    &lt;&lt;: *airflow-common
+    profiles:
+      - debug
+    environment:
+      &lt;&lt;: *airflow-common-env
+      CONNECTION_CHECK_MAX_COUNT: &#34;0&#34;
+    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
+    command:
+      - bash
+      - -c
+      - airflow
+
+  # You can enable flower by adding &#34;--profile flower&#34; option e.g. docker-compose --profile flower up
+  # or by explicitly targeted on the command line e.g. docker-compose up flower.
+  # See: https://docs.docker.com/compose/profiles/
+  flower:
+    &lt;&lt;: *airflow-common
+    command: celery flower
+    profiles:
+      - flower
+    ports:
+      - &#34;5555:5555&#34;
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;curl&#34;, &#34;--fail&#34;, &#34;http://localhost:5555/&#34;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-db-volume:
+</code></pre>
+  </details>
+  
+<p>Afterwards, I will create the required Airflow folders and files in the same location:</p>
+<pre tabindex="0"><code>mkdir -p ./dags ./logs ./plugins ./config
+echo -e &#34;AIRFLOW_UID=$(id -u)&#34; &gt; .env
+</code></pre><p>After previous steps, the folder structure will look like this:</p>
+<pre tabindex="0"><code>└── Airflow
+    ├── config
+    ├── dags
+    ├── docker-compose.yaml
+    ├── .env
+    ├── logs
+    └── plugins  
+</code></pre><p>Once the folder structure is created, we can proceed to initialize Airflow:</p>
+<pre tabindex="0"><code>docker compose up airflow-init
+</code></pre><p>(More detailed information in <a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html">here</a>)</p>
+<h3 id="312-preparing-project">3.1.2. Preparing Project<a hidden class="anchor" aria-hidden="true" href="#312-preparing-project">#</a></h3>
+<p>I will start by <code>cd</code>ing to the location where projects&rsquo; repos will reside. Once there I will start by cloning the repositories. In my case, the folder structure will look like this:</p>
+<pre tabindex="0"><code>└── GitHub
+    └── project_1
+        ├── dockerfile
+        ├── docker-compose.yml
+        ├── requirements.txt
+        └── main.py
+</code></pre><details>
+    <summary>Example files</summary>
+    <p><code>dockerfile</code></p>
+<pre tabindex="0"><code>FROM python:3.10-bullseye
+
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . ./
+
+CMD [&#34;uvicorn&#34;, &#34;main:app&#34;, &#34;--host&#34;, &#34;0.0.0.0&#34;, &#34;--port&#34;, &#34;80&#34;]
+</code></pre><p><code>docker-compose.yml</code></p>
+<pre tabindex="0"><code>services:
+  project_1:
+    image: project_1
+    container_name: project_1
+    volumes:
+      - ./:/app/downloads
+    ports:
+      - &#34;8101:80&#34;
+    expose:
+      - &#34;80&#34;
+    restart: always
+</code></pre><p><code>main.py</code></p>
+<pre tabindex="0"><code>from fastapi import FastAPI
+from starlette.responses import RedirectResponse
+import datetime
+import os
+
+app = FastAPI()
+
+@app.get(&#34;/&#34;)
+def main():
+    response = RedirectResponse(url=&#39;/docs&#39;)
+    return response
+
+@app.get(&#34;/create_file&#34;)
+def create_file():
+
+    # Get filename
+    filename_prefix = &#39;file&#39;
+    filename_suffix = str(datetime.datetime.now()).replace(&#39;:&#39;,&#39;&#39;).replace(&#39;-&#39;,&#39;&#39;).replace(&#39; &#39;,&#39;_&#39;).split(&#39;.&#39;)[0]
+    filename = &#39;_&#39;.join([filename_prefix, filename_suffix]) + &#39;.txt&#39;
+    filepath = &#39;downloads&#39;
+
+    # Create file
+    f = open(os.path.join(filepath, filename), &#34;a&#34;)
+    f.write(&#34;Hello world!!&#34;)
+    f.close()
+
+    return None
+</code></pre><p><code>requirement.txt</code></p>
+<pre tabindex="0"><code>annotated-types==0.6.0
+anyio==3.7.1
+click==8.1.7
+exceptiongroup==1.2.0
+fastapi==0.104.1
+h11==0.14.0
+idna==3.6
+pydantic==2.5.2
+pydantic-core==2.14.5
+sniffio==1.3.0
+starlette==0.27.0
+typing-extensions==4.8.0
+uvicorn==0.24.0.post1
+</code></pre>
+  </details>
+  
+<p>With the repository cloned I will build the image of the project by typing:</p>
+<pre tabindex="0"><code>docker build -t project_1 .
+</code></pre><p>(Note that I have decided to manually build the images every time something changes as it is the easiest way to manage it this way. Ideally I would like to have an automatic CI/CD workflow setup that will check and deploy the changes once done, but due to the nature of my projects (which most are only developed by me), it wouldn&rsquo;t add a lot of value.)</p>
+<h3 id="313-adding-a-project-to-the-docker-compose">3.1.3. Adding a project to the Docker-compose<a hidden class="anchor" aria-hidden="true" href="#313-adding-a-project-to-the-docker-compose">#</a></h3>
+<p>With Airflow and the project image ready, it is time to add the the project to the <code>docker-compose.yml</code> file, so it can be started up/shut down at the same time as the other services.</p>
+<p>Start by opening the location of the <code>docker-compose.yml</code>. In this file, I will locate the following lines:</p>
+<pre tabindex="0"><code>services:
+
+  #### Non-Airflow related containers ####
+
+  #### Airflow related containers ####
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+  ...
+</code></pre><p>Once the section where the extra services will be defined is located, I will proceed to add the following lines:</p>
+<pre tabindex="0"><code>  project_1:
+    image: project_1
+    container_name: project_1
+    volumes:
+      - /home/daniel/Documents/Datalake/project_1:/app/downloads
+    ports:
+      - &#34;8101:80&#34;
+    expose:
+      - &#34;80&#34;
+    restart: always
+</code></pre><p>The <code>docker-compose.yml</code> file will look like this:
+<details>
+    <summary><code>docker-compose.yml</code></summary>
+    <pre tabindex="0"><code># Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# &#34;License&#34;); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# &#34;AS IS&#34; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+# Basic Airflow cluster configuration for CeleryExecutor with Redis and PostgreSQL.
+#
+# WARNING: This configuration is for local development. Do not use it in a production deployment.
+#
+# This configuration supports basic configuration using environment variables or an .env file
+# The following variables are supported:
+#
+# AIRFLOW_IMAGE_NAME           - Docker image name used to run Airflow.
+#                                Default: apache/airflow:2.7.3
+# AIRFLOW_UID                  - User ID in Airflow containers
+#                                Default: 50000
+# AIRFLOW_PROJ_DIR             - Base path to which all the files will be volumed.
+#                                Default: .
+# Those configurations are useful mostly in case of standalone testing/running Airflow in test/try-out mode
+#
+# _AIRFLOW_WWW_USER_USERNAME   - Username for the administrator account (if requested).
+#                                Default: airflow
+# _AIRFLOW_WWW_USER_PASSWORD   - Password for the administrator account (if requested).
+#                                Default: airflow
+# _PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting all containers.
+#                                Use this option ONLY for quick checks. Installing requirements at container
+#                                startup is done EVERY TIME the service is started.
+#                                A better way is to build a custom image or extend the official image
+#                                as described in https://airflow.apache.org/docs/docker-stack/build.html.
+#                                Default: &#39;&#39;
+#
+# Feel free to modify this file to suit your needs.
+---
+version: &#39;3.8&#39;
+x-airflow-common:
+  &amp;airflow-common
+  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
+  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
+  # and uncomment the &#34;build&#34; line below, Then run `docker-compose build` to build the images.
+  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.3}
+  # build: .
+  environment:
+    &amp;airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    # For backward compatibility, with Airflow &lt;2.3
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__CORE__FERNET_KEY: &#39;&#39;
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: &#39;true&#39;
+    AIRFLOW__CORE__LOAD_EXAMPLES: &#39;false&#39;
+    AIRFLOW__API__AUTH_BACKENDS: &#39;airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session&#39;
+    # yamllint disable rule:line-length
+    # Use simple http server on scheduler for health checks
+    # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
+    # yamllint enable rule:line-length
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: &#39;true&#39;
+    # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
+    # for other purpose (development, test and especially production usage) build/extend Airflow image.
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+  volumes:
+    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
+    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+  user: &#34;${AIRFLOW_UID:-50000}:0&#34;
+  depends_on:
+    &amp;airflow-common-depends-on
+    redis:
+      condition: service_healthy
+    postgres:
+      condition: service_healthy
+
+services:
+
+  #### Non-Airflow related containers ####
+  project_1:
+    image: project_1
+    container_name: project_1
+    volumes:
+      - /home/daniel/Documents/Datalake/project_1:/app/downloads
+    ports:
+      - &#34;8101:80&#34;
+    expose:
+      - &#34;80&#34;
+    restart: always
+
+  #### Airflow related containers ####
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;pg_isready&#34;, &#34;-U&#34;, &#34;airflow&#34;]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    ports:
+      - &#34;5432:5432&#34;
+    expose:
+      - &#34;5432&#34;
+
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;redis-cli&#34;, &#34;ping&#34;]
+      interval: 10s
+      timeout: 30s
+      retries: 50
+      start_period: 30s
+    restart: always
+
+  airflow-webserver:
+    &lt;&lt;: *airflow-common
+    command: webserver
+    ports:
+      - &#34;8080:8080&#34;
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;curl&#34;, &#34;--fail&#34;, &#34;http://localhost:8080/health&#34;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    &lt;&lt;: *airflow-common
+    command: scheduler
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;curl&#34;, &#34;--fail&#34;, &#34;http://localhost:8974/health&#34;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-worker:
+    &lt;&lt;: *airflow-common
+    command: celery worker
+    healthcheck:
+      # yamllint disable rule:line-length
+      test:
+        - &#34;CMD-SHELL&#34;
+        - &#39;celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d &#34;celery@$${HOSTNAME}&#34; || celery --app airflow.executors.celery_executor.app inspect ping -d &#34;celery@$${HOSTNAME}&#34;&#39;
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    environment:
+      &lt;&lt;: *airflow-common-env
+      # Required to handle warm shutdown of the celery workers properly
+      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+      DUMB_INIT_SETSID: &#34;0&#34;
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-triggerer:
+    &lt;&lt;: *airflow-common
+    command: triggerer
+    healthcheck:
+      test: [&#34;CMD-SHELL&#34;, &#39;airflow jobs check --job-type TriggererJob --hostname &#34;$${HOSTNAME}&#34;&#39;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-init:
+    &lt;&lt;: *airflow-common
+    entrypoint: /bin/bash
+    # yamllint disable rule:line-length
+    command:
+      - -c
+      - |
+        function ver() {
+          printf &#34;%04d%04d%04d%04d&#34; $${1//./ }
+        }
+        airflow_version=$$(AIRFLOW__LOGGING__LOGGING_LEVEL=INFO &amp;&amp; gosu airflow airflow version)
+        airflow_version_comparable=$$(ver $${airflow_version})
+        min_airflow_version=2.2.0
+        min_airflow_version_comparable=$$(ver $${min_airflow_version})
+        if (( airflow_version_comparable &lt; min_airflow_version_comparable )); then
+          echo
+          echo -e &#34;\033[1;31mERROR!!!: Too old Airflow version $${airflow_version}!\e[0m&#34;
+          echo &#34;The minimum Airflow version supported: $${min_airflow_version}. Only use this or higher!&#34;
+          echo
+          exit 1
+        fi
+        if [[ -z &#34;${AIRFLOW_UID}&#34; ]]; then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: AIRFLOW_UID not set!\e[0m&#34;
+          echo &#34;If you are on Linux, you SHOULD follow the instructions below to set &#34;
+          echo &#34;AIRFLOW_UID environment variable, otherwise files will be owned by root.&#34;
+          echo &#34;For other operating systems you can get rid of the warning with manually created .env file:&#34;
+          echo &#34;    See: https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#setting-the-right-airflow-user&#34;
+          echo
+        fi
+        one_meg=1048576
+        mem_available=$$(($$(getconf _PHYS_PAGES) * $$(getconf PAGE_SIZE) / one_meg))
+        cpus_available=$$(grep -cE &#39;cpu[0-9]+&#39; /proc/stat)
+        disk_available=$$(df / | tail -1 | awk &#39;{print $$4}&#39;)
+        warning_resources=&#34;false&#34;
+        if (( mem_available &lt; 4000 )) ; then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: Not enough memory available for Docker.\e[0m&#34;
+          echo &#34;At least 4GB of memory required. You have $$(numfmt --to iec $$((mem_available * one_meg)))&#34;
+          echo
+          warning_resources=&#34;true&#34;
+        fi
+        if (( cpus_available &lt; 2 )); then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: Not enough CPUS available for Docker.\e[0m&#34;
+          echo &#34;At least 2 CPUs recommended. You have $${cpus_available}&#34;
+          echo
+          warning_resources=&#34;true&#34;
+        fi
+        if (( disk_available &lt; one_meg * 10 )); then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: Not enough Disk space available for Docker.\e[0m&#34;
+          echo &#34;At least 10 GBs recommended. You have $$(numfmt --to iec $$((disk_available * 1024 )))&#34;
+          echo
+          warning_resources=&#34;true&#34;
+        fi
+        if [[ $${warning_resources} == &#34;true&#34; ]]; then
+          echo
+          echo -e &#34;\033[1;33mWARNING!!!: You have not enough resources to run Airflow (see above)!\e[0m&#34;
+          echo &#34;Please follow the instructions to increase amount of resources available:&#34;
+          echo &#34;   https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#before-you-begin&#34;
+          echo
+        fi
+        mkdir -p /sources/logs /sources/dags /sources/plugins
+        chown -R &#34;${AIRFLOW_UID}:0&#34; /sources/{logs,dags,plugins}
+        exec /entrypoint airflow version
+    # yamllint enable rule:line-length
+    environment:
+      &lt;&lt;: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: &#39;true&#39;
+      _AIRFLOW_WWW_USER_CREATE: &#39;true&#39;
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _PIP_ADDITIONAL_REQUIREMENTS: &#39;&#39;
+    user: &#34;0:0&#34;
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}:/sources
+
+  airflow-cli:
+    &lt;&lt;: *airflow-common
+    profiles:
+      - debug
+    environment:
+      &lt;&lt;: *airflow-common-env
+      CONNECTION_CHECK_MAX_COUNT: &#34;0&#34;
+    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
+    command:
+      - bash
+      - -c
+      - airflow
+
+  # You can enable flower by adding &#34;--profile flower&#34; option e.g. docker-compose --profile flower up
+  # or by explicitly targeted on the command line e.g. docker-compose up flower.
+  # See: https://docs.docker.com/compose/profiles/
+  flower:
+    &lt;&lt;: *airflow-common
+    command: celery flower
+    profiles:
+      - flower
+    ports:
+      - &#34;5555:5555&#34;
+    healthcheck:
+      test: [&#34;CMD&#34;, &#34;curl&#34;, &#34;--fail&#34;, &#34;http://localhost:5555/&#34;]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      &lt;&lt;: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-db-volume:
+</code></pre>
+  </details>
+  </p>
+<p>Finally, I test that everything is working by typing:</p>
+<pre tabindex="0"><code>docker compose up
+</code></pre><h3 id="314-adding-customs-dags-to-airflow">3.1.4. Adding customs dags to Airflow<a hidden class="anchor" aria-hidden="true" href="#314-adding-customs-dags-to-airflow">#</a></h3>
+<p>With the services running, it is time to add the a DAG to Airflow. In order to do so, I just need to add the following dag file to the dag folder.</p>
+<p><code>project_1_dag.py</code></p>
+<pre tabindex="0"><code>from airflow import DAG
+from airflow.operators.python import PythonOperator, BranchPythonOperator
+from airflow.operators.bash import BashOperator
+from datetime import datetime
+
+import requests
+
+PORT = 80
+
+def call_api(url: str):
+    response = requests.get(url)
+    
+    if not (200&lt;=response.status_code&lt;=299):
+        raise Exception(&#39;Something went wrong.&#39;)
+
+def _create_file():
+    url = f&#34;http://project_1:{PORT}/create_file&#34;
+    call_api(url)
+
+with DAG(&#34;project_1_dag&#34;, # Dag id
+    start_date=datetime(2023, 10 ,5), # start date, the 1st of January 2023 
+    schedule=&#39;@weekly&#39;, # Cron expression, here @daily means once every day.
+    catchup=False):
+
+    # Tasks are implemented under the dag object
+    create_file = PythonOperator(
+        task_id=&#34;create_file&#34;,
+        python_callable=_create_file
+    )
+
+    create_file
+</code></pre><p>Notice how as all the services belong to the same network, I can call each service by typing the service&rsquo;s name directly: <code>&quot;http://project_1:{PORT}/create_file&quot;</code>.</p>
+<figure>
+    <img loading="lazy" src="/images/setting_up_a_webscraping_service/airflow_ran.png"
+         alt="Successful Airflow ran." width="100%"/> <figcaption>
+            Successful Airflow ran.
+        </figcaption>
+</figure>
+
+<h3 id="32-running-the-services">3.2. Running the services<a hidden class="anchor" aria-hidden="true" href="#32-running-the-services">#</a></h3>
+<p>With everything ready, starting and shutting down everything becomes extremely simple. It only requires of typing the following in the location of my <code>docker-compose.yml</code> file:</p>
+<pre tabindex="0"><code>docker compose up
+</code></pre><p>Just for explanation&rsquo;s shake, this is how my current setup looks like:</p>
+<pre tabindex="0"><code>├── Airflow
+│   ├── config
+│   ├── dags
+│   ├── docker-compose.yaml
+│   ├── .env
+│   ├── logs
+│   └── plugins
+└── GitHub
+│   ├── project_1
+│   ├── project_2
+│   └── project_3
+└── Datalake
+    ├── project_1
+    ├── project_2
+    └── project_3
+</code></pre><h2 id="4-troubleshooting">4. Troubleshooting<a hidden class="anchor" aria-hidden="true" href="#4-troubleshooting">#</a></h2>
+<p>Although most services should be accessible via a browser (the docker ports will be forwarded to host&rsquo;s ports), there may be situations in which they won&rsquo;t work. For these instances, it is a good idea to have a troubleshooting docker image ready that could connect to the troubling containers. I like to use the <a href="https://github.com/nicolaka/netshoot"><code>nicolaka/netshoot</code></a> image to troubleshoot as it contains most of the tools you will need when troubleshooting network related issues.</p>
+<p>To troubleshoot an already running docker container, attach the netshoot container to that container&rsquo;s network by typing:</p>
+<pre tabindex="0"><code>docker run -it --net container:&lt;container_name&gt; nicolaka/netshoot
+</code></pre><h2 id="notes-on-airflow">Notes on Airflow<a hidden class="anchor" aria-hidden="true" href="#notes-on-airflow">#</a></h2>
+<p>For simplicity shake, the airflow logs and dags are located in the same directory as the compose file. This may become an issue if a heavy use of Airflow is done (as it logs will start taking too much space). Having dags into the same location is also not ideal, as there is no easy way on putting those dags under version control. However, for my use cases, these both issues are very unlikely, so I decided to go for the easier setup.</p>
+<p>Above points will be considered (if/when) my new micro-service centered architecture is setup. As the main idea behind that architecture would be to increase the scalability and fault-tolerant of the system.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://daguirreag.github.io/tags/homelab/">Homelab</a></li>
+      <li><a href="https://daguirreag.github.io/tags/docker/">Docker</a></li>
+      <li><a href="https://daguirreag.github.io/tags/scraping/">Scraping</a></li>
+      <li><a href="https://daguirreag.github.io/tags/networking/">Networking</a></li>
+      <li><a href="https://daguirreag.github.io/tags/services/">Services</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://daguirreag.github.io/posts/setting-up-my-own-home-lab-software/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Setting up my own Home lab: Software</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up a webscraping service on x"
+        href="https://x.com/intent/tweet/?text=Setting%20up%20a%20webscraping%20service&amp;url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f&amp;hashtags=Homelab%2cDocker%2cScraping%2cNetworking%2cServices">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z"/>
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up a webscraping service on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f&amp;title=Setting%20up%20a%20webscraping%20service&amp;summary=Setting%20up%20a%20webscraping%20service&amp;source=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up a webscraping service on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f&title=Setting%20up%20a%20webscraping%20service">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up a webscraping service on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up a webscraping service on whatsapp"
+        href="https://api.whatsapp.com/send?text=Setting%20up%20a%20webscraping%20service%20-%20https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up a webscraping service on telegram"
+        href="https://telegram.me/share/url?text=Setting%20up%20a%20webscraping%20service&amp;url=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Setting up a webscraping service on ycombinator"
+        href="https://news.ycombinator.com/submitlink?t=Setting%20up%20a%20webscraping%20service&u=https%3a%2f%2fdaguirreag.github.io%2fposts%2fsetting-up-a-webscraping-service%2f">
+        <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+            xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+            <path
+                d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://daguirreag.github.io/">Daniel Aguirre</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
