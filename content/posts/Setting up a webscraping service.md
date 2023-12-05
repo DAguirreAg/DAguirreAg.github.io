@@ -481,7 +481,7 @@ docker build -t project_1 .
 
 (Note that I have decided to manually build the images every time something changes as it is the easiest way to manage it this way. Ideally I would like to have an automatic CI/CD workflow setup that will check and deploy the changes once done, but due to the nature of my projects (which most are only developed by me), it wouldn't add a lot of value.)
 
-### 3.1.3. Adding a project to the Docker-compose
+### 3.1.3. Adding a project and selenium to the Docker-compose
 
 With Airflow and the project image ready, it is time to add the the project to the `docker-compose.yml` file, so it can be started up/shut down at the same time as the other services.
 
@@ -503,6 +503,16 @@ services:
 
 Once the section where the extra services will be defined is located, I will proceed to add the following lines:
 ```
+  selenium_standalone_chrome:
+    image: selenium/standalone-chrome
+    #image: seleniarm/standalone-chromium:latest # Use this when running in an ARM architecture machine (like a Raspberry Pi)
+    privileged: true
+    shm_size: 2g
+    ports:
+      - "4444:4444"
+    expose:
+      - "4444"
+
   project_1:
     image: project_1
     container_name: project_1
@@ -514,6 +524,8 @@ Once the section where the extra services will be defined is located, I will pro
       - "80"
     restart: always
 ```
+
+
 
 The `docker-compose.yml` file will look like this:
 {{< details "`docker-compose.yml`" >}}
@@ -608,6 +620,16 @@ x-airflow-common:
 services:
 
   #### Non-Airflow related containers ####
+  selenium_standalone_chrome:
+    image: selenium/standalone-chrome
+    #image: seleniarm/standalone-chromium:latest # Use this when running in an ARM architecture machine (like a Raspberry Pi)
+    privileged: true
+    shm_size: 2g
+    ports:
+      - "4444:4444"
+    expose:
+      - "4444"
+
   project_1:
     image: project_1
     container_name: project_1
