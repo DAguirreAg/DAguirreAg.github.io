@@ -3,18 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://daguirreag.github.io/</loc>
-    <lastmod>2023-12-02T22:12:31+01:00</lastmod>
+    <lastmod>2023-12-04T17:53:27+01:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/tags/docker/</loc>
-    <lastmod>2023-12-02T22:12:31+01:00</lastmod>
+    <lastmod>2023-12-04T17:53:27+01:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/management/</loc>
+    <lastmod>2023-12-04T17:53:27+01:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/posts/</loc>
+    <lastmod>2023-12-04T17:53:27+01:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/software/</loc>
+    <lastmod>2023-12-04T17:53:27+01:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/</loc>
+    <lastmod>2023-12-04T17:53:27+01:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/posts/webscraping-project-structure/</loc>
+    <lastmod>2023-12-04T17:53:27+01:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/tags/homelab/</loc>
     <lastmod>2023-12-02T22:12:31+01:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/tags/networking/</loc>
-    <lastmod>2023-12-02T22:12:31+01:00</lastmod>
-  </url><url>
-    <loc>https://daguirreag.github.io/posts/</loc>
     <lastmod>2023-12-02T22:12:31+01:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/tags/scraping/</loc>
@@ -26,9 +38,6 @@
     <loc>https://daguirreag.github.io/posts/setting-up-a-webscraping-service/</loc>
     <lastmod>2023-12-02T22:12:31+01:00</lastmod>
   </url><url>
-    <loc>https://daguirreag.github.io/tags/</loc>
-    <lastmod>2023-12-02T22:12:31+01:00</lastmod>
-  </url><url>
     <loc>https://daguirreag.github.io/tags/pi-hole/</loc>
     <lastmod>2023-11-25T18:51:39+01:00</lastmod>
   </url><url>
@@ -36,9 +45,6 @@
     <lastmod>2023-11-25T18:51:39+01:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/posts/setting-up-my-own-home-lab-software/</loc>
-    <lastmod>2023-11-25T18:51:39+01:00</lastmod>
-  </url><url>
-    <loc>https://daguirreag.github.io/tags/software/</loc>
     <lastmod>2023-11-25T18:51:39+01:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/tags/ssh/</loc>

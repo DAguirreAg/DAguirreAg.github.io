@@ -6,7 +6,18 @@
     <description>Recent content in Posts on Daniel Aguirre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 02 Dec 2023 22:12:31 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Dec 2023 17:53:27 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Webscraping project structure</title>
+      <link>https://daguirreag.github.io/posts/webscraping-project-structure/</link>
+      <pubDate>Mon, 04 Dec 2023 17:53:27 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/posts/webscraping-project-structure/</guid>
+      <description>As the amount of personal webscraping projects increased, I realized the importance of having an structured project template. The reason being that it allows to systematically create new projects without having to worry about refactoring later on if it doesn&amp;rsquo;t match with my webscraping service.
+Because of this, I have decided to explain in this post how I structure most of my webscraping projects:
+1. Considerations I like to keep each project as independent from the rest as possible.</description>
+    </item>
+    
     <item>
       <title>Setting up a webscraping service</title>
       <link>https://daguirreag.github.io/posts/setting-up-a-webscraping-service/</link>
