@@ -886,7 +886,7 @@ with DAG("project_1_dag", # Dag id
 
 Notice how as all the services belong to the same network, I can call each service by typing the service's name directly: `"http://project_1:{PORT}/create_file"`.
 
-{{<figure src="/images/setting_up_a_webscraping_service/airflow_ran.png" title="Successful Airflow ran." alt="Successful Airflow ran." width="100%">}}
+{{<figure src="/images/setting_up_a_webscraping_service/airflow_run.png" title="Successful Airflow run." alt="Successful Airflow run." width="100%">}}
 
 ### 3.2. Running the services
 
