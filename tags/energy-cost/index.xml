@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Energy cost on 👨‍💻 Daniel Aguirre</title>
+    <link>https://daguirreag.github.io/tags/energy-cost/</link>
+    <description>Recent content in Energy cost on 👨‍💻 Daniel Aguirre</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 14 Jan 2024 23:58:16 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/energy-cost/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Simple energy cost study on running a home lab</title>
+      <link>https://daguirreag.github.io/posts/simple-energy-cost-study-on-running-a-home-lab/</link>
+      <pubDate>Sun, 14 Jan 2024 23:58:16 +0100</pubDate>
+      
+      <guid>https://daguirreag.github.io/posts/simple-energy-cost-study-on-running-a-home-lab/</guid>
+      <description>After the increases in Europe&amp;rsquo;s electricity prices, I have decided to run some basic numbers to understand how much my homelab installation costs me, as well as to have some reference numbers to have an informed opinion when purchasing new devices.
+For this analysis, I will start by calculating the cost per KWh as well as the yearly cost per W. I will proceed to estimate the rough power consumption of different devices to finally calculate the total cost of running them.</description>
+    </item>
+    
+  </channel>
+</rss>
