@@ -2,10 +2,9 @@
 title: 'Setting LLMs on Ubuntu at your homelab'
 date: 2024-05-26T18:34:51+02:00
 draft: false
-tags: ["LLM", "Ubuntu", "Homelab". "On-premise"]
+tags: ["LLM", "Ubuntu", "Homelab", "On-premise"]
 cover:
   image: images/setting_llms_on_ubuntu_at_your_homelab/llm_prompt.png
-
 ---
 
 As a private and technical person, it is common to be afraid of the data capturing capabilities of current LLM models. Because of this, I decided to create a small post explaining how to set up your own LLM workspace in your own computer, so you can still can use the latest LLMs without being worried about being spied.
