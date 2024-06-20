@@ -6,7 +6,17 @@
     <description>Recent content in Homelab on 👨‍💻 Daniel Aguirre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Jan 2024 23:58:16 +0100</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/homelab/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 26 May 2024 18:34:51 +0200</lastBuildDate><atom:link href="https://daguirreag.github.io/tags/homelab/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setting LLMs on Ubuntu at your homelab</title>
+      <link>https://daguirreag.github.io/posts/setting-llms-on-ubuntu-at-your-homelab/</link>
+      <pubDate>Sun, 26 May 2024 18:34:51 +0200</pubDate>
+      
+      <guid>https://daguirreag.github.io/posts/setting-llms-on-ubuntu-at-your-homelab/</guid>
+      <description>As a private and technical person, it is common to be afraid of the data capturing capabilities of current LLM models. Because of this, I decided to create a small post explaining how to set up your own LLM workspace in your own computer, so you can still can use the latest LLMs without being worried about being spied.
+Basic requirements Notice that one of the downsides of LLMs is that they require somewhat expensive hardware to run on.</description>
+    </item>
+    
     <item>
       <title>Simple energy cost study on running a home lab</title>
       <link>https://daguirreag.github.io/posts/simple-energy-cost-study-on-running-a-home-lab/</link>

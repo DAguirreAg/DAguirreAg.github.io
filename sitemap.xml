@@ -3,7 +3,28 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://daguirreag.github.io/</loc>
-    <lastmod>2024-01-14T23:58:16+01:00</lastmod>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/homelab/</loc>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/llm/</loc>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/on-premise/</loc>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/posts/</loc>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/posts/setting-llms-on-ubuntu-at-your-homelab/</loc>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/</loc>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
+  </url><url>
+    <loc>https://daguirreag.github.io/tags/ubuntu/</loc>
+    <lastmod>2024-05-26T18:34:51+02:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/tags/analysis/</loc>
     <lastmod>2024-01-14T23:58:16+01:00</lastmod>
@@ -11,16 +32,7 @@
     <loc>https://daguirreag.github.io/tags/energy-cost/</loc>
     <lastmod>2024-01-14T23:58:16+01:00</lastmod>
   </url><url>
-    <loc>https://daguirreag.github.io/tags/homelab/</loc>
-    <lastmod>2024-01-14T23:58:16+01:00</lastmod>
-  </url><url>
-    <loc>https://daguirreag.github.io/posts/</loc>
-    <lastmod>2024-01-14T23:58:16+01:00</lastmod>
-  </url><url>
     <loc>https://daguirreag.github.io/posts/simple-energy-cost-study-on-running-a-home-lab/</loc>
-    <lastmod>2024-01-14T23:58:16+01:00</lastmod>
-  </url><url>
-    <loc>https://daguirreag.github.io/tags/</loc>
     <lastmod>2024-01-14T23:58:16+01:00</lastmod>
   </url><url>
     <loc>https://daguirreag.github.io/tags/docker/</loc>
