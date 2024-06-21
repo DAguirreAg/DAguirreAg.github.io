@@ -27,6 +27,22 @@ Notice that one of the downsides of LLMs is that they require somewhat expensive
 2. Start Ollama server by typing the following in a terminal: `ollama serve`
 3. Run the model by typing the following in a terminal: `ollama run {llm-name}` (example: `ollama run llama3`)
 
+# Using LLMs via Python
+
+
+```
+import ollama
+
+# Generate prompt
+prompt = f'How to run llm at home?'
+
+# Request response LLM
+response = ollama.generate(model=model, prompt=prompt, options={'temperature': 0})
+
+print(response['response'])
+
+```
+
 # References
 
 * [Running an LLM in Ubuntu Linux](https://www.jeremymorgan.com/blog/generative-ai/run-llm-locally-ubuntu/)
